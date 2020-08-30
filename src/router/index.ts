@@ -1,31 +1,18 @@
 import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
-import Home from '../views/Home.vue'
+import VueRouter from 'vue-router'
+import { routes } from './routes'
 
 Vue.use(VueRouter)
 
-const routes: Array<RouteConfig> = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  },
-  {
-    path: '/composition-api',
-    name: 'Composition',
-    component: () => import(/* webpackChunkName: "composition" */ '../views/Composition.vue')
-  }
-]
-
-const router = new VueRouter({
+export const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+  base: '/',
+  routes,
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 })
-
-export default router
