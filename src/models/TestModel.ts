@@ -1,0 +1,1 @@
+export const testModel = (): void => {}
