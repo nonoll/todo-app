@@ -2,20 +2,29 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/composition-api">Composition Api</router-link>
+      <router-link to="/todo-ui">Todo ui</router-link> |
+      <router-link to="/composition-api">Composition Api</router-link> |
+      <router-link to="/not-found">Not Found</router-link> |
     </div>
     <router-view/>
   </div>
 </template>
 
-<style lang="scss">
+<script lang="ts">
+import { defineComponent } from '@vue/composition-api'
+
+export default defineComponent({
+  setup () {
+    return {}
+  }
+})
+</script>
+
+<style lang="scss" scoped>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 #nav {
