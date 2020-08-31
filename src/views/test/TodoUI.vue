@@ -2,50 +2,64 @@
   <main-layout>
     <div class="ui">
       <div class="todo">
-        <div class="todo__info">
-          <div class="info">오늘(요일) MM월 DD일</div>
-          <div>
-            필터
-            <label>
-              우선순위: // 색으로 구분
-              <select>
-                <option value="1">우선순위 1</option>
-                <option value="2">우선순위 2</option>
-                <option value="3">우선순위 3</option>
-                <option value="4" selected>우선순위 4</option>
-              </select>
-            </label>
-          </div>
+        <div class="todo-info">
+          <el-tooltip effect="dark" content="일감을 추가합니다." placement="top-start">
+            <el-button icon="el-icon-edit" circle @click="state.viewRegistModal = true"></el-button>
+          </el-tooltip>
+          <div class="todo-info__title">오늘(월요일) 08월 31일</div>
+          <el-tooltip effect="dark" content="일감을 정렬합니다." placement="top-start">
+            <el-select v-model="state.filter" placeholder="Select">
+              <el-option
+                v-for="item in state.filterOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-tooltip>
         </div>
-        <div class="todo__list">
-          <div class="todo__item">
-            <div>
-              <i>우선순위 색상 // 완료시 색상 변경</i>
-              <label>
-                <span class="blind">완료여부 // 아이콘 처리</span>
-                <input type="checkbox" />
-              </label>
+        <div class="todo-list">
+          <template v-if="!state.isEmpty">
+            <el-card class="todo-item" shadow="hover">
+              <div class="todo-item__status">
+                <label>
+                  <span class="blind">완료여부 // 아이콘 처리</span>
+                  <input type="checkbox" />
+                </label>
+              </div>
+              <div class="todo-item__contents" @click="state.viewRegistModal = true">
+                <em class="contents-title">작업항목 제목</em>
+                <p class="contents-description">작업항목 내용</p>
+              </div>
+              <div class="todo-item__actions">
+                <el-tooltip class="item" effect="dark" content="일감을 편집합니다." placement="top-start">
+                  <el-link icon="el-icon-more-outline" @click="state.viewRegistModal = true"></el-link>
+                </el-tooltip>
+                <el-divider></el-divider>
+                <el-tooltip class="item" effect="dark" content="일감을 삭제합니다." placement="top-start">
+                  <el-link icon="el-icon-delete" @click="() => {
+                    displayMessage()
+                    state.isEmpty = true
+                  }"></el-link>
+                </el-tooltip>
+              </div>
+            </el-card>
+          </template>
+          <template v-else>
+            <div class="todo-item is--empty">
+              <i class="empty-icon el-icon-circle-check"></i>
+              <p class="empty-title">등록된 일감이 없습니다.</p>
             </div>
-            <div>
-              // 완료시 스타일 변경
-              <em>작업항목 제목</em>
-              <p>작업항목 내용</p>
-            </div>
-            <div>
-              <i>수정아이콘</i>
-              <i class="el-icon-delete"></i>
-              <button>삭제</button>
-            </div>
-          </div>
-          <div class="todo__item is--empty">등록된 작업 항목이 없습니다.</div>
+          </template>
         </div>
 
-        <el-dialog title="일감 추가" width="80%" :visible="true" center>
+        <el-dialog title="일감 추가" width="80%" :visible.sync="state.viewRegistModal" @opened="onModalOpen" center>
           <div class="regist">
             <el-form label-position="left" label-width="120px" class="form">
               <em class="blind">작업 항목 등록</em>
               <div class="form__group">
                 <el-form-item
+                  ref="elModalTitle"
                   label="제목"
                   :rules="[
                     { required: true, message: 'Please input email address', trigger: 'blur' },
@@ -69,22 +83,23 @@
                  -->
               </div>
               <div class="form__group" :class="{ 'is--hide': !state.editPriority }">
-                <el-dropdown trigger="click" @command="onProrityChange">
-                  <el-button type="primary">
-                    <i class="el-icon-s-flag">우선순위</i><i class="el-icon-arrow-down el-icon--right"></i>
-                  </el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item :command="PRIORITYS.VALUE_1"><i class="el-icon-s-flag">우선순위 1</i></el-dropdown-item>
-                    <el-dropdown-item :command="PRIORITYS.VALUE_2"><i class="el-icon-s-flag">우선순위 2</i></el-dropdown-item>
-                    <el-dropdown-item :command="PRIORITYS.VALUE_3"><i class="el-icon-s-flag">우선순위 3</i></el-dropdown-item>
-                    <el-dropdown-item :command="PRIORITYS.VALUE_4"><i class="el-icon-s-flag">우선순위 4</i></el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
+                <el-form-item label="우선순위">
+                  <el-dropdown trigger="click" @command="onProrityChange">
+                    <el-button type="primary">
+                      <i class="el-icon-s-flag">우선순위</i><i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item :command="PRIORITYS.VALUE_1"><i class="el-icon-s-flag">우선순위 1</i></el-dropdown-item>
+                      <el-dropdown-item :command="PRIORITYS.VALUE_2"><i class="el-icon-s-flag">우선순위 2</i></el-dropdown-item>
+                      <el-dropdown-item :command="PRIORITYS.VALUE_3"><i class="el-icon-s-flag">우선순위 3</i></el-dropdown-item>
+                      <el-dropdown-item :command="PRIORITYS.VALUE_4"><i class="el-icon-s-flag">우선순위 4</i></el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </el-form-item>
                 <el-divider></el-divider>
               </div>
               <div class="form__group" :class="{ 'is--hide': !state.editDueDate }">
-                <label>
-                  <span class="blind">마감기한</span>
+                <el-form-item label="마감기한">
                   <el-time-select
                     v-model="state.duDate"
                     :picker-options="{
@@ -94,7 +109,7 @@
                     }"
                     placeholder="Select time">
                   </el-time-select>
-                </label>
+                </el-form-item>
                 <el-divider></el-divider>
               </div>
               <div class="form__actions">
@@ -115,43 +130,33 @@
                     </el-checkbox-button>
                   </el-tooltip>
                 </div>
-                <!--
-                <div class="actions__button">
-                  <el-button-group>
-                    <el-button type="primary" icon="el-icon-check">저장</el-button>
-                    <el-button type="info" icon="el-icon-close">취소</el-button>
-                    <el-popconfirm title="Are you sure to delete this?">
-                      <el-button slot="reference">삭제</el-button>
-                    </el-popconfirm>
-                    <el-popconfirm title="Are you sure to delete this?" confirmButtonText="확인" cancelButtonText="취소">
-                      <el-button slot="reference">취소</el-button>
-                    </el-popconfirm>
-                  </el-button-group>
-                </div>
-                 -->
               </div>
             </el-form>
           </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" icon="el-icon-check">저장</el-button>
-            <el-popconfirm title="일감을 삭제 하시겠습니까?" confirmButtonText="확인" cancelButtonText="취소">
-              <el-button slot="reference" icon="el-icon-delete">삭제</el-button>
-            </el-popconfirm>
-            <el-popconfirm title="조건체크 / 취소 하시겠습니까?" confirmButtonText="확인" cancelButtonText="취소">
-              <el-button slot="reference" icon="el-icon-close">취소</el-button>
-            </el-popconfirm>
-          </span>
+          <template #footer>
+            <div class="actions__button">
+              <el-button-group>
+                <el-button type="primary" icon="el-icon-check" @click="() => {
+                  displayMessage(true)
+                  state.isEmpty = false
+                  state.viewRegistModal = false
+                }">저장</el-button>
+                <el-button icon="el-icon-close" @click="state.viewRegistModal = false">취소</el-button>
+              </el-button-group>
+            </div>
+          </template>
         </el-dialog>
       </div>
-      <div class="add-todo blind">일감 추가</div>
     </div>
   </main-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from '@vue/composition-api'
+import { defineComponent, reactive, ref } from '@vue/composition-api'
 import { Notification } from 'element-ui'
 import MainLayout from '@/components/layouts/MainLayout.vue'
+import { ElementUIComponent } from 'element-ui/types/component'
+import { ElNotificationOptions } from 'element-ui/types/notification'
 
 enum PRIORITYS {
   VALUE_1 = 'VALUE_1',
@@ -171,15 +176,32 @@ export default defineComponent({
     MainLayout
   },
   setup () {
+    const elModalTitle = ref<ElementUIComponent>()
     const state = reactive({
+      filter: 'ALL',
+      filterOptions: [{
+        value: 'ALL',
+        label: '전체'
+      }, {
+        value: 'PRIORITY',
+        label: '우선순위'
+      }, {
+        value: 'DUE_DATE',
+        label: '마감기한'
+      }, {
+        value: 'DONE',
+        label: '완료'
+      }],
       priority: '우선순위 4',
       dueDate: '',
+      isEmpty: false,
+      viewRegistModal: false,
       editDescription: false,
       editPriority: false,
       editDueDate: false
     })
 
-    const onProrityChange = (value: PRIORITYS) => {
+    const onProrityChange = (value: PRIORITYS): void => {
       console.log('onProrityChange', value)
       switch (value) {
         case PRIORITYS.VALUE_1:
@@ -218,25 +240,45 @@ export default defineComponent({
       }
     }
 
-    const displayMessage = () => {
-      Notification({
+    const displayMessage = (isAdd: boolean): void => {
+      let message = {
         type: 'success',
-        title: 'Info',
-        message: 'This is a message without close button',
+        title: '일감 제목',
+        message: '일감이 추가 되었습니다.',
         showClose: false
-      })
+      } as ElNotificationOptions
+
+      if (!isAdd) {
+        message = {
+          type: 'warning',
+          title: '일감 제목',
+          message: '일감이 삭제 되었습니다.',
+          showClose: false
+        }
+      }
+
+      Notification(message)
     }
 
-    onMounted(() => {
-      setTimeout(displayMessage, 1000 * 2)
-    })
+    const onModalOpen = (): void => {
+      if (elModalTitle && elModalTitle.value) {
+        const el = elModalTitle.value.$el as HTMLInputElement
+        const input = el.querySelector('input')
+        if (input) {
+          input.focus()
+        }
+      }
+    }
 
     return {
       PRIORITYS,
       ACTION_TYPES,
+      elModalTitle,
       state,
       onProrityChange,
-      onActionsIconChange
+      onActionsIconChange,
+      onModalOpen,
+      displayMessage
     }
   }
 })
@@ -247,6 +289,94 @@ export default defineComponent({
   position: relative;
   width: 100%;
   flex: 1;
+
+  .todo {
+    height: 100%;
+  }
+
+  .todo-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    &__title {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  .todo-list {
+    margin: 20px 0 0;
+    height: 100%;
+  }
+
+  .todo-item {
+    ::v-deep .el-card__body {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &:hover {
+      .todo-item__actions {
+        opacity: 1;
+      }
+    }
+
+    &__contents {
+      width: 80%;
+
+      .contents-title {
+        font-size: 16px;
+        line-height: 24px;
+        color: #303133;
+      }
+
+      .contents-description {
+        font-size: 12px;
+        line-height: 20px;
+        color: #909399;
+      }
+    }
+
+    &__actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    &.is--empty {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+
+      .empty-icon {
+        font-size: 48px;
+        line-height: 48px;
+        color: #67C23A;
+      }
+
+      .empty-title {
+        margin: 20px 0 0;
+        font-size: 22px;
+        line-height: 22px;
+      }
+    }
+  }
+
+  ::v-deep .el-link.is-underline:hover:after {
+    display: none;
+  }
 }
 
 .blind {
