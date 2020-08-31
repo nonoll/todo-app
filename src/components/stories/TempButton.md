@@ -1,5 +1,0 @@
-# TempButton
-
-## props
-
-...
