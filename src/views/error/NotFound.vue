@@ -43,6 +43,7 @@ export default defineComponent({
 
   &__message {
     margin: 20px;
+    text-align: center;
     word-break: break-all;
   }
 
@@ -55,6 +56,7 @@ export default defineComponent({
       padding: 8px 14px;
       font-size: 12px;
       color: #2a2a2a;
+      cursor: pointer;
       border-radius: 4px;
       background-color: #e2e2e2;
     }

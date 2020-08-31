@@ -1,8 +1,10 @@
 <template>
   <div class="layout is--main">
+    <!--
     <div class="layout__header">
       <main-header />
     </div>
+     -->
     <div class="layout__body">
       <slot></slot>
     </div>
@@ -32,7 +34,6 @@ export default defineComponent({
   width: 100%;
   flex-direction: column;
   flex: 1;
-  border: 1px dashed black;
 
   &__header {
     height: 44px;
