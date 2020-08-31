@@ -47,8 +47,9 @@ export default defineComponent({
   setup (props, context: SetupContext) {
     const { emit } = context
 
-    const onChange = (value: boolean): void => {
-      emit('change', { payload: props.payload, value })
+    const onChange = (checked: boolean): void => {
+      const payload = { ...props.payload }
+      emit('change', { payload, checked })
     }
 
     return {
