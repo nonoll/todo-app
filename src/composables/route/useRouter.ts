@@ -1,7 +1,7 @@
 import { SetupContext, provide, inject } from '@vue/composition-api'
 import { RouteService } from '@/services/RouteService'
 
-const RouterToken = Symbol();
+const RouterToken = Symbol('RouterToken')
 
 export const provideRouter = (context: SetupContext): RouteService => {
   const service = new RouteService(context)

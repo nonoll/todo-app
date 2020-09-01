@@ -1,9 +1,9 @@
-import { WatchOptions } from 'vue';
-import { Observable } from 'rxjs';
-import { Observables, WatchObservable } from 'vue-rx';
+import Vue, { WatchOptions } from 'vue'
+import { Observable } from 'rxjs'
+import { Observables, WatchObservable } from 'vue-rx'
 
 declare module '*.vue' {
-  import Vue from 'vue'
+
   export default Vue
 }
 
