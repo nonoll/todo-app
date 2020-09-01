@@ -1,3 +1,4 @@
+/** eslint-disable */
 import { CheckMenu } from '..'
 import { actions } from '@storybook/addon-actions'
 import { withKnobs, text, select, object } from '@storybook/addon-knobs'
@@ -70,10 +71,10 @@ export const MenusCheckMenu = () => ({
       )
     }
   },
-  data() {
+  data () {
     return {
       eventsFromObject
-    };
+    }
   },
   template: `
     <div>

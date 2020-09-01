@@ -1,3 +1,4 @@
+/** eslint-disable */
 import { SelectMenu } from '../'
 import { actions } from '@storybook/addon-actions'
 import { withKnobs, text, select, object } from '@storybook/addon-knobs'
@@ -5,7 +6,7 @@ import { withKnobs, text, select, object } from '@storybook/addon-knobs'
 export default {
   title: 'Components/Menus',
   decorators: [withKnobs]
-};
+}
 
 const defaultOptions = [
   {
@@ -21,7 +22,7 @@ const defaultOptions = [
     value: 'DONE',
     label: '완료'
   }
-] as const;
+] as const
 
 const eventsFromObject = actions({
   change: 'change'
@@ -75,10 +76,10 @@ export const MenusSelectMenu = () => ({
       default: object('options', defaultOptions)
     }
   },
-  data() {
+  data () {
     return {
       eventsFromObject
-    };
+    }
   },
   template: `
     <div>
