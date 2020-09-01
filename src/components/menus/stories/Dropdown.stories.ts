@@ -1,4 +1,5 @@
-import Dropdown from '../Dropdown.vue'
+/** eslint-disable */
+import { Dropdown } from '..'
 import { actions } from '@storybook/addon-actions'
 import { withKnobs, text, select, object } from '@storybook/addon-knobs'
 
@@ -63,10 +64,10 @@ export const MenusDropdown = () => ({
       default: object('menus', defaultMenus)
     }
   },
-  data() {
+  data () {
     return {
       eventsFromObject
-    };
+    }
   },
   template: `
     <div>
@@ -124,10 +125,10 @@ export const SampleDropdown = () => ({
       default: object('menus', defaultMenus)
     }
   },
-  data() {
+  data () {
     return {
       eventsFromObject
-    };
+    }
   },
   template: `
     <div>
@@ -141,9 +142,9 @@ export const SampleDropdown = () => ({
     </div>
   `,
   methods: {
-    onChange(value: { label: string; value: number }) {
+    onChange (value: { label: string; value: number }) {
       const { label } = value;
-      (this as any).primaryLabel = label;
+      (this as any).primaryLabel = label
     }
   }
 })

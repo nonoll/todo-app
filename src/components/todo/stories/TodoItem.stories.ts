@@ -1,6 +1,7 @@
+/** eslint-disable */
 import { TodoItem } from '..'
 import { actions } from '@storybook/addon-actions'
-import { withKnobs, text, select, object, boolean } from '@storybook/addon-knobs'
+import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 
 export default {
   title: 'Components/Todo',
@@ -27,10 +28,10 @@ export const TodoTodoItem = () => ({
       default: boolean('isDone', false)
     }
   },
-  data() {
+  data () {
     return {
       eventsFromObject
-    };
+    }
   },
   template: `
     <div>

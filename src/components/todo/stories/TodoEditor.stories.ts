@@ -1,6 +1,7 @@
+/** eslint-disable */
 import { TodoEditor } from '..'
 import { actions } from '@storybook/addon-actions'
-import { withKnobs, text, select, object, boolean, date } from '@storybook/addon-knobs'
+import { withKnobs, text, select, boolean } from '@storybook/addon-knobs'
 import { TODO_EDITOR_MODE, PRIORITYS_LABELS, PRIORITYS_VALUES, DefaultPriority } from '@/constants/todo'
 
 export default {
@@ -9,11 +10,11 @@ export default {
 }
 
 const eventsFromObject = actions({
-  'opened': 'opened',
-  'closed': 'closed',
-  'save': 'save',
-  'modify': 'modify',
-  'cancel': 'cancel'
+  opened: 'opened',
+  closed: 'closed',
+  save: 'save',
+  modify: 'modify',
+  cancel: 'cancel'
 })
 
 export const TodoTodoEditor = () => ({
@@ -46,20 +47,20 @@ export const TodoTodoEditor = () => ({
     },
     priority: {
       default: select('priority', {
-        [PRIORITYS_LABELS.LABEL_1] : PRIORITYS_VALUES.VALUE_1,
-        [PRIORITYS_LABELS.LABEL_2] : PRIORITYS_VALUES.VALUE_2,
-        [PRIORITYS_LABELS.LABEL_3] : PRIORITYS_VALUES.VALUE_3,
-        [PRIORITYS_LABELS.LABEL_4] : PRIORITYS_VALUES.VALUE_4
+        [PRIORITYS_LABELS.LABEL_1]: PRIORITYS_VALUES.VALUE_1,
+        [PRIORITYS_LABELS.LABEL_2]: PRIORITYS_VALUES.VALUE_2,
+        [PRIORITYS_LABELS.LABEL_3]: PRIORITYS_VALUES.VALUE_3,
+        [PRIORITYS_LABELS.LABEL_4]: PRIORITYS_VALUES.VALUE_4
       }, DefaultPriority.value)
     },
     dueDate: {
       default: text('dueDate', '19:00')
     }
   },
-  data() {
+  data () {
     return {
       eventsFromObject
-    };
+    }
   },
   template: `
     <div>
@@ -81,9 +82,12 @@ export const TodoTodoEditor = () => ({
     </div>
   `,
   methods: {
-    onOpenClick() {
+    onOpenClick () {
       (this as any).visible = false
-      setTimeout(() => (this as any).visible = true)
+      /** eslint-disable */
+      setTimeout(() => {
+        (this as any).visible = true
+      })
     }
   }
 })

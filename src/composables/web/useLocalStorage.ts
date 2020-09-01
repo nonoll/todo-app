@@ -1,4 +1,4 @@
-import { onBeforeUnmount, reactive, onBeforeMount } from '@vue/composition-api'
+import { onBeforeUnmount, reactive } from '@vue/composition-api'
 import { LocalStorage } from '@/libs/web/LocalStorage'
 
 export const useLocalStorage = (useDestroy = true) => {
@@ -16,8 +16,8 @@ export const useLocalStorage = (useDestroy = true) => {
 }
 
 export interface ILocalStorageState {
-  storageRemaining: number | boolean
-  data: string
+  storageRemaining: number | boolean;
+  data: string;
 }
 
 export const useLocalStorageByKey = (key: string, useDestroy = true) => {

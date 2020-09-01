@@ -1,3 +1,4 @@
+/** eslint-disable */
 import { LinkMenu } from '..'
 import { actions } from '@storybook/addon-actions'
 import { withKnobs, text, select } from '@storybook/addon-knobs'
@@ -61,10 +62,10 @@ export const MenusLinkMenu = () => ({
       )
     }
   },
-  data() {
+  data () {
     return {
       eventsFromObject
-    };
+    }
   },
   template: `
     <div>
