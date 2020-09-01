@@ -10,11 +10,14 @@
     @closed="onClosed"
   >
     <div class="regist">
-      <el-form label-position="left" label-width="120px" class="form">
-        <em class="blind">작업 항목 등록</em>
+      <el-form ref="elForm" :model="todo" label-position="left" label-width="120px" class="form">
+        <em class="blind">일감 항목 등록</em>
         <div class="form__group">
-          <el-form-item label="제목" :rules="[]">
-            <el-input ref="elTitle" v-model="todo.title" @keydown.enter.native="onSubmit"></el-input>
+          <el-form-item prop="title" label="제목" :rules="[
+            { required: true, message: '일감 제목을 입력하세요.', trigger: 'blur' },
+            { min: 1, max: 25, message: '최소 1자 ~ 최대 25자까지 입력 가능 합니다.', trigger: 'blur' }
+          ]">
+            <el-input ref="elTitle" v-model.trim="todo.title" @keydown.enter.native="onSubmit"></el-input>
           </el-form-item>
           <el-divider></el-divider>
         </div>
@@ -138,6 +141,7 @@ export default defineComponent({
     }
   },
   setup (props, { emit }) {
+    const elForm = ref<ElementUIComponent>()
     const elTitle = ref<ElementUIComponent>()
 
     const viewState = computed(() => {
@@ -237,8 +241,14 @@ export default defineComponent({
       }
     }
 
+    const isValid = (): Promise<boolean> => {
+      return new Promise(resolve => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (elForm.value as any).validate((result: boolean) => resolve(result))
+      })
+    }
+
     const sanitizeTodo = (payload: typeof todo) => {
-      // TODO: validate
       const dueDate = payload.dueDate ? timeToDate(payload.dueDate) : ''
       const todo = {
         ...payload,
@@ -252,13 +262,32 @@ export default defineComponent({
       }
     }
 
-    const onSaveClick = (): void => emit('save', sanitizeTodo(todo))
-    const onModifyClick = (): void => emit('modify', sanitizeTodo(todo))
-    const onCancelClick = (): void => emit('cancel', sanitizeTodo(todo))
-    const onSubmit = (): void => emit(props.mode === TODO_EDITOR_MODE.ADD ? 'save' : 'modify', sanitizeTodo(todo))
+    const onSaveClick = async () => {
+      if (!await isValid()) {
+        return
+      }
+      emit('save', sanitizeTodo(todo))
+    }
+
+    const onModifyClick = async () => {
+      if (!await isValid()) {
+        return
+      }
+      emit('modify', sanitizeTodo(todo))
+    }
+
+    const onCancelClick = () => emit('cancel', sanitizeTodo(todo))
+
+    const onSubmit = async () => {
+      if (!await isValid()) {
+        return
+      }
+      emit(props.mode === TODO_EDITOR_MODE.ADD ? 'save' : 'modify', sanitizeTodo(todo))
+    }
 
     return {
       TODO_ACTION_TYPES,
+      elForm,
       elTitle,
       viewState,
       state,
