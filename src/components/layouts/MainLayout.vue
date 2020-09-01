@@ -42,7 +42,6 @@ export default defineComponent({
   &__body {
     display: flex;
     flex: 1;
-    margin-top: 10px;
     font-size: 14px;
   }
 

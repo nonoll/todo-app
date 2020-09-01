@@ -35,3 +35,8 @@ export const PRIORITYS: ReadonlyArray<PriorityItem> = [
     value: PRIORITYS_VALUES.VALUE_4
   }
 ]
+
+export const DefaultPriority: PriorityItem = {
+  label: PRIORITYS_LABELS.LABEL_4,
+  value: PRIORITYS_VALUES.VALUE_4
+} as const

@@ -14,19 +14,17 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 import EmptyLayout from '@/components/layouts/EmptyLayout.vue'
+import { useRouter } from '@/composables'
 
 export default defineComponent({
   components: {
     EmptyLayout
   },
   setup () {
-    const onBack = () => {
-      console.log('onBack')
-    }
+    const { router } = useRouter()
 
-    const onHome = () => {
-      console.log('onHome')
-    }
+    const onBack = () => router.back()
+    const onHome = () => router.replace('/')
 
     return { onBack, onHome }
   }

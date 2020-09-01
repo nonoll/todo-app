@@ -6,9 +6,12 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
+import { provideRouter } from '@/composables'
 
 export default defineComponent({
-  setup () {
+  setup (_, context) {
+    provideRouter(context)
+
     return {}
   }
 })

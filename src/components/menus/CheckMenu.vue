@@ -1,6 +1,6 @@
 <template>
   <el-tooltip class="check-menu" :effect="tooltipEffect" :content="tooltipMessage" :placement="tooltipPlacement">
-    <el-checkbox-button class="check-menu__button" @change="onChange($event)">
+    <el-checkbox-button class="check-menu__button" :value="checked" @change="onChange($event)">
       <i :class="iconClassName"><span class="blind">{{ blind }}</span></i>
     </el-checkbox-button>
   </el-tooltip>
@@ -39,6 +39,10 @@ export default defineComponent({
       type: String,
       default: ''
     },
+    checked: {
+      type: Boolean,
+      default: false
+    },
     payload: {
       type: [String, Boolean, Number, Object],
       default: ''
@@ -47,8 +51,9 @@ export default defineComponent({
   setup (props, context: SetupContext) {
     const { emit } = context
 
-    const onChange = (value: boolean): void => {
-      emit('change', { payload: props.payload, value })
+    const onChange = (checked: boolean): void => {
+      const payload = { ...props.payload }
+      emit('change', { payload, checked })
     }
 
     return {
