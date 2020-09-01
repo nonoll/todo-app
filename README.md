@@ -32,3 +32,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## NPM 스크립트
+
+- `dev:git-hooks`: git 메시지 처리
