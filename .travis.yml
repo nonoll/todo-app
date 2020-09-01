@@ -21,7 +21,14 @@ before_install:
   - npm install
 
 script:
-  - npm run test
+  - npm run deploy:test
+  - npm run deploy:build
+
+branches:
+  only:
+    - main
+    # for release, tags
+    - /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
 # 배포 설정 for heroku
 deploy:
