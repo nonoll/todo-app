@@ -10,10 +10,11 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "storybook": "start-storybook -p 8086",
-    "build:storybook": "build-storybook -o ./dist-storybook",
     "dev:git-hooks": "./.dev-tools/git-hooks/install_hooks.sh",
-    "deploy:start": "node server.js",
-    "deploy:test": "npm run test:unit"
+    "build:storybook": "build-storybook -o ./docs",
+    "deploy:test": "npm run test:unit",
+    "deploy:build": "npm run build:storybook && npm run build",
+    "deploy:start": "node server.js"
   },
   "dependencies": {
     "@vue/composition-api": "0.6.7",
