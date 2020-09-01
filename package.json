@@ -11,12 +11,17 @@
     "lint": "vue-cli-service lint",
     "storybook": "start-storybook -p 8086",
     "build:storybook": "build-storybook -o ./dist-storybook",
-    "dev:git-hooks": "./.dev-tools/git-hooks/install_hooks.sh"
+    "dev:git-hooks": "./.dev-tools/git-hooks/install_hooks.sh",
+    "deploy:start": "node server.js",
+    "deploy:test": "npm run test:unit"
   },
   "dependencies": {
     "@vue/composition-api": "0.6.7",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
+    "express": "^4.17.1",
+    "express-favicon": "^2.0.1",
+    "path": "^0.12.7",
     "rxjs": "^6.6.2",
     "rxjs-compat": "^6.6.2",
     "vue": "^2.6.11",
