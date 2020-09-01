@@ -115,7 +115,7 @@ export default defineComponent({
             const aDate = a.createdAt
             const bDate = b.createdAt
             if (aDate && bDate) {
-              const sort = aDate.getTime() - bDate.getTime()
+              const sort = new Date(aDate).getTime() - new Date(bDate).getTime()
               return sort
             } else {
               return 0

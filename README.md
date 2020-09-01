@@ -133,5 +133,6 @@ $ npm run serve
 
 ## 4. 미비한 사항
 
+- confirm modal - window.confirm 활용
 - unit test 코드
 - storybook doc 작성
