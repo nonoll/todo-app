@@ -8,14 +8,19 @@
     </div>
     <div class="todo-item__contents">
       <em class="contents-title">{{ title }}</em>
-      <p class="contents-description">{{ description }}</p>
+      <p class="contents-description">{{ description }}&nbsp;</p>
+      <div class="contents-info">
+        <span v-if="priority">우선순위 {{ priority }}</span>
+        <span class="info-divider" v-if="dueDate"></span>
+        <span v-if="dueDate">마감기한 {{ dueDate }}</span>
+      </div>
       <a class="todo-item__contents-link" @click="$emit('content-click')">
         <span class="blind">일감 상세 보기</span>
       </a>
     </div>
     <div class="todo-item__actions">
       <link-menu tooltip-message="일감을 편집합니다." icon-class-name="el-icon-more-outline" @click="$emit('edit-click')" />
-      <el-divider></el-divider>
+      <el-divider class="divider"></el-divider>
       <link-menu tooltip-message="일감을 삭제합니다." icon-class-name="el-icon-delete" @click="$emit('delete-click')" />
     </div>
   </el-card>
@@ -40,6 +45,14 @@ export default defineComponent({
       default: ''
     },
     description: {
+      type: String,
+      default: ''
+    },
+    priority: {
+      type: Number,
+      default: 0
+    },
+    dueDate: {
       type: String,
       default: ''
     },
@@ -70,31 +83,6 @@ export default defineComponent({
     margin: 20px 0 0;
   }
 
-  .status-check {
-    // appearance:none;
-    // -webkit-appearance:none;
-    // outline: none;
-    // content: none;
-    // border-radius: 100%;
-
-    // &:before {
-    //   font-family: element-icons!important;
-    //   content: "\e79c";
-    //   font-size: 15px;
-    //   color: transparent !important;
-    //   background: var(--priority-color);
-    //   display: block;
-    //   width: 15px;
-    //   height: 15px;
-    //   border: 1px solid var(--priority-color);
-    //   margin-right: 7px;
-    // }
-
-    // &:checked:before {
-    //   color: var(--priority-color) !important;
-    // }
-  }
-
   ::v-deep .el-card__body {
     display: flex;
     flex-direction: row;
@@ -108,6 +96,27 @@ export default defineComponent({
     }
   }
 
+  &.is--done {
+    .contents-title {
+      color: #909399;
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    .contents-description {
+      color: #C0C4CC;
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    .contents-info {
+      span {
+        opacity: 0.5;
+        text-decoration: line-through;
+      }
+    }
+  }
+
   &__contents {
     position: relative;
     width: 80%;
@@ -116,12 +125,38 @@ export default defineComponent({
       font-size: 16px;
       line-height: 24px;
       color: #303133;
+      transform: color, opacity 0.5s;
     }
 
     .contents-description {
       font-size: 12px;
       line-height: 20px;
       color: #909399;
+      transform: color, opacity 0.5s;
+      min-height: 20px;
+    }
+
+    .contents-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      span {
+        font-size: 10px;
+        line-height: 16px;
+        color: #C0C4CC;
+        transform: color, opacity 0.5s;
+        min-height: 16px;
+      }
+
+      .info-divider {
+        display: inline-block;
+        margin: 5px;
+        border-left: 1px solid #C0C4CC;
+        height: 10px;
+        min-height: 10px;
+        box-sizing: border-box;
+      }
     }
 
     &-link {
@@ -141,6 +176,11 @@ export default defineComponent({
     justify-content: space-between;
     opacity: 0;
     transition: opacity 0.5s;
+
+    .divider {
+      width: 15px;
+      margin: 24px 4px 24px 0;
+    }
   }
 }
 </style>

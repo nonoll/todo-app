@@ -4,8 +4,9 @@
     class="todo-editor"
     :title="viewState.title"
     width="80%"
-    :visible.sync="visible"
+    :visible="visible"
     @opened="onOpened"
+    @close="onClose"
     @closed="onClosed"
   >
     <div class="regist">
@@ -13,13 +14,13 @@
         <em class="blind">작업 항목 등록</em>
         <div class="form__group">
           <el-form-item label="제목" :rules="[]">
-            <el-input ref="elTitle" v-model="todo.title"></el-input>
+            <el-input ref="elTitle" v-model="todo.title" @keydown.enter.native="onSubmit"></el-input>
           </el-form-item>
           <el-divider></el-divider>
         </div>
         <div class="form__group" :class="{ 'is--hide': !state.editDescription }">
           <el-form-item label="내용" :rules="[]">
-            <el-input type="textarea" class="todo__description" v-model="todo.description"></el-input>
+            <el-input type="textarea" class="todo__description" v-model="todo.description" @keydown.enter.native="onSubmit"></el-input>
           </el-form-item>
           <el-divider></el-divider>
         </div>
@@ -46,18 +47,21 @@
             tooltip-message="일감의 내용을 입력/편집 합니다."
             blind="내용 입력/편집"
             icon-class-name="el-icon-chat-line-square"
+            :checked="state.editDescription"
             @change="onActionChange(TODO_ACTION_TYPES.DESCRIPTION, $event)"
           />
           <check-menu
             tooltip-message="일감의 우선순위를 지정합니다."
             blind="우선순위 입력/편집"
             icon-class-name="el-icon-s-flag"
+            :checked="state.editPriority"
             @change="onActionChange(TODO_ACTION_TYPES.PRIORITY, $event)"
           />
           <check-menu
             tooltip-message="일감의 마감기한을 지정합니다."
             blind="마감기한 입력/편집"
             icon-class-name="el-icon-timer"
+            :checked="state.editDueDate"
             @change="onActionChange(TODO_ACTION_TYPES.DUE_DATE, $event)"
           />
         </div>
@@ -80,9 +84,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, computed } from '@vue/composition-api'
+import { defineComponent, reactive, ref, computed, watch } from '@vue/composition-api'
 import { Dropdown, CheckMenu } from '@/components/menus'
-import { TODO_EDITOR_MODE, DefaultPriority, PRIORITYS, PriorityItem, TODO_ACTION_TYPES } from '@/constants'
+import { TODO_EDITOR_MODE, DefaultPriority, PRIORITYS, PriorityItem, TODO_ACTION_TYPES } from '@/constants/todo'
 import { ElementUIComponent } from 'element-ui/types/component'
 import { timeToDate } from '@/libs/format'
 
@@ -105,6 +109,14 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
+    uuid: {
+      type: String,
+      default: ''
+    },
+    createdAt: {
+      type: [Date, String],
+      default: ''
+    },
     title: {
       type: String,
       default: ''
@@ -122,8 +134,7 @@ export default defineComponent({
       default: DefaultPriority.value
     },
     dueDate: {
-      type: String,
-      default: ''
+      type: String
     }
   },
   setup (props, { emit }) {
@@ -143,18 +154,48 @@ export default defineComponent({
         end: '19:00'
       },
       dueDate: props.dueDate,
-      editDescription: false,
-      editPriority: false,
-      editDueDate: false
+      editDescription: !!props.description,
+      editPriority: !!props.priorityLabel,
+      editDueDate: !!props.dueDate
     })
 
     const todo = reactive({
+      uuid: props.uuid,
+      createdAt: props.createdAt,
       title: props.title,
       description: props.description,
       priorityLabel: props.priorityLabel,
       priority: props.priority,
       dueDate: props.dueDate
     })
+
+    let originTodo = JSON.stringify({ ...todo })
+
+    const initialState = (): void => {
+      state.dueDate = props.dueDate
+      state.editDescription = !!props.description
+      state.editPriority = !!props.priorityLabel
+      state.editDueDate = !!props.dueDate
+
+      todo.uuid = props.uuid
+      todo.createdAt = props.createdAt
+      todo.title = props.title
+      todo.description = props.description
+      todo.priorityLabel = props.priorityLabel
+      todo.priority = props.priority
+      todo.dueDate = props.dueDate
+
+      originTodo = JSON.stringify({ ...todo })
+    }
+
+    watch(
+      () => props.visible,
+      (visible) => {
+        if (visible) {
+          initialState()
+        }
+      }
+    )
 
     const onOpened = (): void => {
       emit('opened')
@@ -171,6 +212,7 @@ export default defineComponent({
       }
     }
 
+    const onClose = (): void => emit('close')
     const onClosed = (): void => emit('closed')
 
     const onProrityChange = (changeItem: PriorityItem): void => {
@@ -179,7 +221,7 @@ export default defineComponent({
       todo.priority = value
     }
 
-    const onActionChange = (actionType: TODO_ACTION_TYPES, checked: boolean): void => {
+    const onActionChange = (actionType: TODO_ACTION_TYPES, { checked }: { checked: boolean }): void => {
       switch (actionType) {
         case TODO_ACTION_TYPES.DESCRIPTION:
           state.editDescription = checked
@@ -196,15 +238,24 @@ export default defineComponent({
     }
 
     const sanitizeTodo = (payload: typeof todo) => {
-      return {
+      // TODO: validate
+      const dueDate = payload.dueDate ? timeToDate(payload.dueDate) : ''
+      const todo = {
         ...payload,
-        dueDate: timeToDate(payload.dueDate)
+        dueDate
+      }
+      const isDirty = JSON.stringify({ ...payload }) !== originTodo
+
+      return {
+        todo,
+        isDirty
       }
     }
 
     const onSaveClick = (): void => emit('save', sanitizeTodo(todo))
     const onModifyClick = (): void => emit('modify', sanitizeTodo(todo))
-    const onCancelClick = (): void => emit('cancel')
+    const onCancelClick = (): void => emit('cancel', sanitizeTodo(todo))
+    const onSubmit = (): void => emit(props.mode === TODO_EDITOR_MODE.ADD ? 'save' : 'modify', sanitizeTodo(todo))
 
     return {
       TODO_ACTION_TYPES,
@@ -213,12 +264,14 @@ export default defineComponent({
       state,
       todo,
       onOpened,
+      onClose,
       onClosed,
       onProrityChange,
       onActionChange,
       onSaveClick,
       onModifyClick,
-      onCancelClick
+      onCancelClick,
+      onSubmit
     }
   }
 })

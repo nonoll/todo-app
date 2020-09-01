@@ -35,3 +35,8 @@ export const FILTERS: ReadonlyArray<FilterItem> = [
     value: FILTER_VALUES.DONE
   }
 ]
+
+export const DefaultFilter: FilterItem = {
+  value: FILTER_VALUES.ALL,
+  label: FILTER_LABELS.ALL
+} as const

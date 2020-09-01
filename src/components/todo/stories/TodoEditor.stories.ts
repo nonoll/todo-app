@@ -1,7 +1,7 @@
 import { TodoEditor } from '..'
 import { actions } from '@storybook/addon-actions'
 import { withKnobs, text, select, object, boolean, date } from '@storybook/addon-knobs'
-import { TODO_EDITOR_MODE, PRIORITYS_LABELS, PRIORITYS_VALUES, DefaultPriority } from '@/constants'
+import { TODO_EDITOR_MODE, PRIORITYS_LABELS, PRIORITYS_VALUES, DefaultPriority } from '@/constants/todo'
 
 export default {
   title: 'Components/Todo',

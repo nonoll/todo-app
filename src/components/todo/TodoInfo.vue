@@ -61,10 +61,15 @@ export default defineComponent({
 }
 
 .todo-info {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding: 20px 0 20px 0;
+  background: #fff;
+  z-index: 5;
 
   &__title {
     position: absolute;

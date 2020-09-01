@@ -1,18 +1,20 @@
 <template>
   <div class="todo-list">
     <template v-if="viewState.hasList">
-      <todo-item v-for="(item, index) in todoList"
-        :key="index"
-        :title="item.title"
-        :description="item.description"
-        :is-done="item.isDone"
-        @status-toggle="$emit('status-toggle', { index, item })"
-        @content-click="$emit('content-click', { index, item })"
-        @edit-click="$emit('edit-click', { index, item })"
-        @delete-click="$emit('delete-click', { index, item })"
+      <todo-item v-for="(todo, index) in viewState.displayList"
+        :key="todo.uuid || index"
+        :title="todo.title"
+        :description="todo.description"
+        :priority="todo.priority"
+        :due-date="todo.dueDate"
+        :is-done="todo.isDone"
+        @status-toggle="$emit('status-toggle', { index, todo })"
+        @content-click="$emit('content-click', { index, todo })"
+        @edit-click="$emit('edit-click', { index, todo })"
+        @delete-click="$emit('delete-click', { index, todo })"
       />
     </template>
-    <template v-else-if="!viewState.hasList && viewState.isEmpty">
+    <template v-else-if="viewState.isEmpty">
       <div class="todo-item is--empty">
         <i class="empty-icon el-icon-circle-check"></i>
         <p class="empty-title">등록된 일감이 없습니다.</p>
@@ -34,13 +36,34 @@ export default defineComponent({
     todoList: {
       type: Array,
       require: true
+    },
+    displayKey: {
+      type: String,
+      default: ''
     }
   },
   setup (props) {
     const viewState = computed(() => {
-      const hasList = props.todoList && props.todoList.length
+      const displayList = (() => {
+        if (!props.todoList && !(props.todoList || []).length) {
+          return []
+        }
+
+        if (!props.displayKey) {
+          return props.todoList || []
+        }
+
+        return (props.todoList || []).map(todo => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if ((todo as any)[props.displayKey]) {
+            return todo
+          }
+        }).filter(todo => todo)
+      })()
+      const hasList = displayList.length
       const isEmpty = !hasList
-      return { hasList, isEmpty }
+
+      return { hasList, displayList, isEmpty }
     })
 
     return {
@@ -61,8 +84,8 @@ export default defineComponent({
 }
 
 .todo-list {
-  margin: 20px 0 0;
-  height: 100%;
+  margin: 0;
+  height: calc(100% - 80px);
 }
 
 .todo-item {
